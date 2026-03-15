@@ -53,6 +53,34 @@ All manifests are in `/app-manifests`:
 | `ingress.yaml` | Ingress with TLS for frontend and backend |
 
 ---
+## Important Note About React Environment Variables
+
+Before deploying the application to Kubernetes, the backend and frontend container images must be built and pushed to a remote container registry (for example Docker Hub, Amazon ECR, or GitHub Container Registry).
+
+Kubernetes will later pull these images when creating Pods.
+
+React applications **do not read environment variables at runtime** when served as static files.
+
+Instead, environment variables are **compiled into the application during the build process**.
+
+Because of this, the frontend must be built with the **exact backend API endpoint that will be used in Kubernetes**.
+
+Example configuration in the frontend `.env` file:
+
+```env
+REACT_APP_API_BASE_URL=https://api.your-domain
+```
+
+> ⚠️ Important: You must also update `your-domain` in the **Ingress** and **Certificate** resources (`ingress.yaml` and `certificate.yaml`) so that:
+
+- TLS certificates match the domain
+- Ingress routes traffic correctly to the frontend and backend services
+
+When the React application is built, this value is embedded directly into the compiled JavaScript bundle.
+
+If the backend API endpoint or domain changes later, the **frontend image must be rebuilt and redeployed** so the new endpoint and domain are included in the application build.
+
+---
 
 ## 3️⃣ Install the EBS CSI Driver
 
