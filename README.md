@@ -94,9 +94,7 @@ Install the driver:
 eksctl create addon \
   --name aws-ebs-csi-driver \
   --cluster app-cluster \
-  --region us-east-1 \
-  --attach-policy-arn arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy \
-  --approve
+  --region us-east-1
 ```
 
 ### Verify the Driver Installation
